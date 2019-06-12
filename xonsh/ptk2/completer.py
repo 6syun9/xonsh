@@ -26,9 +26,7 @@ class PromptToolkitCompleter(Completer):
     def get_completions(self, document, complete_event):
         """Returns a generator for list of completions."""
         env = builtins.__xonsh__.env
-        should_complete = complete_event.completion_requested or env.get(
-            "UPDATE_COMPLETIONS_ON_KEYPRESS"
-        )
+        should_complete = complete_event.completion_requested or env.get("UPDATE_COMPLETIONS_ON_KEYPRESS")
         #  Only generate completions when the user hits tab.
         if not should_complete or self.completer is None:
             return
@@ -41,9 +39,7 @@ class PromptToolkitCompleter(Completer):
         prefix = line[begidx:endidx]
         expand_offset = len(line_ex) - len(line)
         # get normal completions
-        completions, l = self.completer.complete(
-            prefix, line_ex, begidx + expand_offset, endidx + expand_offset, self.ctx
-        )
+        completions, l = self.completer.complete(prefix, line_ex, begidx + expand_offset, endidx + expand_offset, self.ctx)
         # completions from auto suggest
         sug_comp = None
         if env.get("AUTO_SUGGEST") and env.get("AUTO_SUGGEST_IN_COMPLETIONS"):
@@ -51,11 +47,11 @@ class PromptToolkitCompleter(Completer):
             if sug_comp is None:
                 pass
             elif len(completions) == 0:
-                completions = (sug_comp,)
+                completions = (sug_comp, )
             else:
                 completions = set(completions)
                 completions.discard(sug_comp)
-                completions = (sug_comp,) + tuple(sorted(completions))
+                completions = (sug_comp, ) + tuple(sorted(completions))
         # reserve space, if needed.
         if len(completions) <= 1:
             pass
@@ -101,4 +97,5 @@ class PromptToolkitCompleter(Completer):
             last_h = render._last_screen.height if render._last_screen else 0
             last_h = max(render._min_available_height, last_h)
             if last_h < size:
-                render._last_screen.height = size
+                if render._last_screen:
+                    render._last_screen.height = size
