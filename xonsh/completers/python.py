@@ -5,6 +5,7 @@ import inspect
 import builtins
 import importlib
 import collections.abc as cabc
+import warnings
 
 import xonsh.tools as xt
 import xonsh.lazyasd as xl
@@ -226,7 +227,9 @@ def attr_complete(prefix, ctx, filter_func):
         _val_, _ctx_ = _safe_eval(_expr, _ctx)
         if _val_ is None and _ctx_ is None:
             continue
-        a = getattr(val, opt)
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore")
+            a = getattr(val, opt)
         if builtins.__xonsh__.env["COMPLETIONS_BRACKETS"]:
             if callable(a):
                 rpl = opt + "("
